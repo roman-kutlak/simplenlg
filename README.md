@@ -1,12 +1,15 @@
+[![Build Status](https://travis-ci.org/simplenlg/simplenlg.svg?branch=master)](https://travis-ci.org/simplenlg/simplenlg)
+
+
 SimpleNLG
 =========
 
-SimpleNLG is a simple Java API designed to facilitate the generation of Natural Language. It was originally developed at the [University of Aberdeen's Department of Computing Science](http://www.abdn.ac.uk/ncs/departments/computing-science/index.php).
+SimpleNLG is a simple Java API designed to facilitate the generation of Natural Language. It was originally developed at the [University of Aberdeen's Department of Computing Science](http://www.abdn.ac.uk/ncs/departments/computing-science/index.php). The [discussion list for SimpleNLG is on Google Groups](https://groups.google.com/forum/#!forum/simplenlg).
 
 SimpleNLG is intended to function as a "[realisation engine](http://en.wikipedia.org/wiki/Realization_(linguistics))" for [Natural Language Generation](http://en.wikipedia.org/wiki/Natural_language_generation) architectures, and has been used successfully in a number of projects, both academic and commercial. It handles the following:
 
 * Lexicon/morphology system: The default lexicon computes inflected forms (morphological realisation). We believe this has fair coverage. Better coverage can be obtained by using the [NIH Specialist Lexicon](http://lexsrv3.nlm.nih.gov/LexSysGroup/Projects/lexicon/current/web/) (which is supported by SimpleNLG).
-* Realiser: Generates texts from a syntactic form. Grammatical coverage is limited compared to tools such as KPML and FUF/SURGE, but we believe it is adequate for many NLG tasks.
+* Realiser: Generates texts from a syntactic form. Grammatical coverage is limited compared to tools such as [KPML](http://www.fb10.uni-bremen.de/anglistik/langpro/kpml/README.html) and [FUF/SURGE](http://www.cs.bgu.ac.il/surge/index.html), but we believe it is adequate for many NLG tasks.
 * Microplanning: Currently just simple aggregation, hopefully will grow over time.
 
 Current release (English)
@@ -17,7 +20,7 @@ Please note that earlier versions of SimpleNLG have different licensing, in part
 
 Getting started
 ---------------
-For information on how to use SimpleNLG, please see the tutorial and [API](https://cdn.rawgit.com/simplenlg/simplenlg/master/docs/javadoc/index.html).
+For information on how to use SimpleNLG, please see the [tutorial](https://github.com/simplenlg/simplenlg/wiki/Section-0-–-SimpleNLG-Tutorial) and [API](https://cdn.rawgit.com/simplenlg/simplenlg/master/docs/javadoc/index.html).
 
 If you have a technical question about using SimpleNLG, please check the SimpleNLG discussion list.
 
@@ -34,3 +37,7 @@ SimpleNLG for other languages
 A version of SimpleNLG has now been developed for *French* by *Pierre-Luc Vaudry* at the Université de Montreal. This is a development based on the version 4 architecture. It is current being distributed separately from [this page](http://www-etud.iro.umontreal.ca/~vaudrypl/snlgbil/snlgEnFr_english.html).
 
 *Marcel Bollman* has been working on an adaptation of SimpleNLG version 3 to German. This is available from [this page](http://www.linguistics.rub.de/~bollmann/simplenlg-ger.html). Please remember that SimpleNLG version 3 is not licensed for commercial use
+
+SimpleNLG License 
+-----------------------------
+SimpleNLG is licensed under the terms and conditions of the [Mozilla Public Licence (MPL)](http://www.mozilla.org/MPL/).

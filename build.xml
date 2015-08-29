@@ -14,34 +14,34 @@ The Original Code is "Simplenlg".
 
 The Initial Developer of the Original Code is Ehud Reiter, Albert Gatt and Dave Westwater.
 Portions created by Ehud Reiter, Albert Gatt and Dave Westwater are Copyright (C) 2010-11 The University of Aberdeen. All Rights Reserved.
- 
+
 Contributor(s): Ehud Reiter, Albert Gatt, Dave Westwater, Roman Kutlak, Margaret Mitchell, Saad Mahamood.
 -->
 <project name="simplenlg" basedir="." default="main">
-    
+
     <presetdef name="javac">
         <javac includeantruntime="false" />
     </presetdef>
-    
-    <property name="src.dir"     value="src"/>
-    <property name="testsrc.dir" value="testsrc"/>
-    <property name="res.dir"     value="res" />
-    
+
+    <property name="src.dir"     value="src/main/java"/>
+    <property name="testsrc.dir" value="src/test/java"/>
+    <property name="res.dir"     value="src/test/resources" />
+
 
     <property name="build.dir"   value="build"/>
     <property name="classes.dir" value="${build.dir}/classes"/>
     <property name="jar.dir"     value="${build.dir}/jar"/>
     <property name="report.dir"  value="${build.dir}/junitreport"/>
-    <property name="lexicon.dir" value="/Users/roman/NLP/Lexicons/lexAccess2013lite/data/HSqlDb" />
+    <property name="lexicon.dir" value="${res.dir}/NIHLexicon" />
 
     <property name="main-class"  value="simplenlg.server.SimpleServer"/>
-    
+
     <property name="lib.dir"     value="lib"/>
 
     <!-- Compiles to Java 1.6 -->
     <property name="ant.build.javac.source" value="1.6"/>
     <property name="ant.build.javac.target" value="1.6"/>
-    
+
     <!-- Includes all of JARs in lib.dir. No longer used.
     <path id="classpath">
         <fileset dir="${lib.dir}" includes="**/*.jar"/>
@@ -51,11 +51,10 @@ Contributor(s): Ehud Reiter, Albert Gatt, Dave Westwater, Roman Kutlak, Margaret
     <path id="classpath">
         <!-- <pathelement path="${lib.dir}/jaxb-impl.jar" /> -->
         <pathelement path="${lib.dir}/junit-4.4.jar" />
-        <pathelement path="${lib.dir}/lexAccess2013dist.jar" />
-        <pathelement path="${lib.dir}/lexCheck2006api.jar" />
+        <pathelement path="${lib.dir}/lexAccess2011dist.jar" />
         <pathelement path="${lib.dir}/lvg2011api.jar" />
     </path>
-    
+
     <path id="application" location="${jar.dir}/${ant.project.name}.jar"/>
 
     <target name="clean">
@@ -103,7 +102,7 @@ Contributor(s): Ehud Reiter, Albert Gatt, Dave Westwater, Roman Kutlak, Margaret
             <manifest>
                 <attribute name="Main-Class" value="${main-class}"/>
             </manifest>
-            
+
             <!--Copies all the jar files into the package-->
             <fileset dir="${classes.dir}" includes="**/*.class" />
             <fileset dir="${src.dir}" includes="**/*.java" />
@@ -123,11 +122,14 @@ Contributor(s): Ehud Reiter, Albert Gatt, Dave Westwater, Roman Kutlak, Margaret
             <fileset dir="${classes.dir}" excludes="**/*.properties" />
             <fileset dir="${classes.dir}" includes="**/*.class" />
             <fileset dir="${src.dir}" includes="**/*.java" />
-        </jar> 
+        </jar>
     </target>
 
     <!-- Runs the SimpleNLG SimpleServer -->
     <target name="run" depends="jar">
+      <unzip src="${lexicon.dir}/lexAccess2011.data.zip" dest="${lexicon.dir}" />
+	  <echo message="**** Starting the SimpleNLG Simple Server"/>
+	  <echo message="**** Waiting for clients. Type 'exit' and press enter to quit. "/>
         <java fork="true" classname="${main-class}">
             <classpath>
                 <path refid="classpath"/>
@@ -135,67 +137,26 @@ Contributor(s): Ehud Reiter, Albert Gatt, Dave Westwater, Roman Kutlak, Margaret
             </classpath>
             <jvmarg line="-Xmx512m"/>
         </java>
-    </target>
-    
-    <!-- Conditionally check to see if someone is running Windows -->
-    <condition property="windowsos">
-        <os family="windows" />
-    </condition>
-
-    <!-- JUnit test command that runs all the JUnit test for Windows 
-         and sets the relevant enviroment variables -->
-    <target name="junit-winenv" if="windowsos">
-        <exec executable="cmd" dir=".">
-            <env key="LexDBPath" value="${lexicon.dir}/lexAccess2011.data"/>
-            <env key="TestFilePath" value="${testsrc.dir}/simplenlg/xmlrealiser/"/> 
-            <arg value="/c"/>
-            <arg value="ant junit-full"/>
-        </exec>
-    </target>	
-
-    <!-- Runs all JUnit tests including those that require enviroment variables -->
-    <target name="junit-full" depends="compile.test,jar">
-	<mkdir dir="${report.dir}"/>
-        <junit fork="true" printsummary="yes">
-            <classpath>
-                <path refid="classpath"/>
-                <path refid="application"/>
-            </classpath>
-            
-            <jvmarg line="-Xmx512m"/>
-            
-            <formatter type="xml"/>
-            
-            <batchtest todir="${report.dir}">
-                <fileset dir="${testsrc.dir}">
-                    <!-- the following files are excluded as they are not actual
-                    tests. Usually, just a superclass with the test setup. -->
-                        <exclude name="**/SyntaxTests.*" />
-                        <exclude name="**/SharedLexiconTests.*" />
-                        <exclude name="**/SimpleNLG4Test.*" />
-                        <exclude name="**/StandAloneExample*" />
-                        <exclude name="**/ClauseAggregationTest2*"/>
-                </fileset>
-            </batchtest>
-        </junit>
+	<delete file="${lexicon.dir}/lexAccess2011.data" />
     </target>
 
-    <!-- Standard JUnit that excludes test that require platform 
+    <!-- Standard JUnit that excludes test that require platform
          specific enviroment variables -->
     <target name="junit" depends="compile.test,jar">
     <mkdir dir="${report.dir}"/>
+	<unzip src="${lexicon.dir}/lexAccess2011.data.zip" dest="${lexicon.dir}"/>
         <junit fork="true" printsummary="yes">
             <classpath>
                 <path refid="classpath"/>
                 <path refid="application"/>
             </classpath>
-            
+
             <jvmarg line="-Xmx512m"/>
         	<env key="LexDBPath" value="${lexicon.dir}/lexAccess2013.data"/>
-            <env key="TestFilePath" value="${testsrc.dir}/simplenlg/xmlrealiser/"/>      
-        	                        
+            <env key="TestFilePath" value="${testsrc.dir}/simplenlg/xmlrealiser/"/>
+
             <formatter type="xml"/>
-            
+
             <batchtest todir="${report.dir}">
                 <fileset dir="${testsrc.dir}">
                     <!-- the following files are excluded as they are not actual
@@ -205,13 +166,12 @@ Contributor(s): Ehud Reiter, Albert Gatt, Dave Westwater, Roman Kutlak, Margaret
                         <exclude name="**/SimpleNLG4Test.*" />
                         <exclude name="**/StandAloneExample*" />
                         <exclude name="**/ClauseAggregationTest2*"/>
-                	    <!-- XML Tests: Excluded as they require enviroment variables. -->
-                	    <!-- <exclude name="**/Tester.*" /> --> 
                 </fileset>
             </batchtest>
         </junit>
+		<delete file="${lexicon.dir}/lexAccess2011.data"/>
     </target>
-    
+
     <!-- Runs the JUnit Report -->
 	<target name="junitreport">
         <junitreport todir="${report.dir}">
@@ -219,7 +179,7 @@ Contributor(s): Ehud Reiter, Albert Gatt, Dave Westwater, Roman Kutlak, Margaret
             <report todir="${report.dir}"/>
         </junitreport>
     </target>
-    
+
     <!-- Cleans the build directory and builds a JAR with third party libs -->
     <target name="clean-build" depends="clean,jar"/>
 
